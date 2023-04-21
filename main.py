@@ -1,34 +1,38 @@
 import os
 import csv
 
-#pull CSV
-budget_data_path =os.path.join('..', 'Pybank', 'budget_data.csv')
+election_data_path =os.path.join('..','Pypoll','election_data.csv')
 
-with open(budget_data_path) as budget_data:
-    reader = csv.reader(budget_data, delimiter = ',')
-    header= next(reader)
+with open(election_data_path) as election_data:
+    reader = csv.reader(election_data, delimiter= ',')
+    next(reader)
+    data = list(reader)
+    count = len(data)
 
-    #csv lists
-    months = []
-    profit_loss = []
-    change = []
+    candidatelist = list()
+    total = list()
 
-    for row in reader:
-       months.append(row[0])
-       profit_loss.append(int(row[1]))
-    for i in range(len(profit_loss)-1):
-        change.append(profit_loss[i+1]-profit_loss[i])
+    for i in range (0, count):
+        candidate = data[i][2]
+        total.append(candidate)
+        if candidate not in candidatelist:
+            candidatelist.append(candidate)
+    candidatecount = len(candidatelist)
 
-increase = max(change)
-decrease = min(change)
+    votes = list()
+    percentage = list()
+    for j in range (0,candidatecount):
+        name= candidatelist[j]
+        votes.append(total.count(name))
+        percent = votes[j]/count
 
-monthincrease = change.index(max(change))+1
-monthdecrease = change.index(min(change))+1
+    winner = votes.index(max(votes)) 
 
-print("Financial Analysis")
-print(" ")
-print(f"Total Months:{len(months)}")
-print(f"Total: ${sum(profit_loss)}")
-print(f"Average Change: {round(sum(change)/len(change),2)}")
-print(f"Greatest Increase in Profits: {months[monthincrease]} (${(str(increase))})")
-print(f"Greatest Decrease in Profits: {months[monthdecrease]} (${(str(decrease))})")
+print ("Election Results")
+print(f"Toal Votes: {count:,}")
+
+print(f"Winner: {candidatelist[winner]}")
+
+print("Election Results", file=open("PyPoll.txt", "a"))
+print(f"Toal Votes: {count:,}", file=open("PyPoll.txt", "a"))
+print(f"Winner: {candidatelist[winner]}", file=open("PyPoll.txt", "a"))
